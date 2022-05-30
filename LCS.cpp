@@ -160,17 +160,61 @@ vector<vector<int>> threeSum2(vector<int> &nums){
     return ans;
 }
 
+vector<int> productExceptSelf(vector<int>& nums){
+    int n = nums.size();
+    vector<int> ans(n, 1);
+    int prefix = 1, suffix = 1;
+    for(int i = 0; i < n; i++){
+        ans[i]*= prefix;
+        prefix*= nums[i];
+        ans[n-i-1]*= suffix;
+        suffix*= nums[n-i-1];
+    }
+    return ans;
+}
+
+int trap_bruteforce(vector<int> &height){
+    int n = height.size();
+    int left_max[n], right_max[n];
+    left_max[0] = 0; right_max[n-1] = 0;
+    int lf = INT_MIN, rf = INT_MIN;
+    for(int i = 1; i < n; i++){
+        lf = max(lf, height[i-1]);
+        left_max[i] = lf;
+    }
+    for(int i = n-2; i >=0; i--){
+        rf = max(rf, height[i+1]);
+        right_max[i] = rf;
+    }
+    int ans = 0;
+    for(int i = 0; i < n; i++){
+        int temp = min(left_max[i], right_max[i]) - height[i];
+        if(temp > 0){
+            ans += temp;
+        }
+    }
+    return ans;
+}
+
+int minimumCardPickup(vector<int>& cards) {
+    int n = cards.size();
+    unordered_map<int, int> m;
+    int ans = INT_MAX;
+    for(int i = 0; i < n; i++){
+        if(m.find(cards[i]) != m.end()){
+            ans = min(ans, i - m[cards[i]]);
+        }
+        m[cards[i]] = i;
+    }
+    return ans;
+}
+
+
+
 int main(){
     
-    vector<int> arr = {0, 0, 0, 0};
-    vector<vector<int>> ans = threeSum2(arr);
-    for(auto it = ans.begin(); it != ans.end(); it++){
-        vector<int> temp = *it;
-        for(auto x = temp.begin(); x != temp.end(); x++){
-            cout << *x << " ";
-        }
-        cout << "\n";
-    }
+    vector<int> height = {4,2,0,3,2,5};
+    cout << trap_bruteforce(height) << endl;
 
     return 0;
 }
